@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Spot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .search-bar {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            border-radius: 50px;
+            padding: 10px 20px;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+
+        .btn-custom {
+            background: #e63946;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+        }
+
+        .btn-custom:hover {
+            background: #d62828;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-card,
+        .article-card {
+            background: white;
+            color: black;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .video-card:hover,
+        .article-card:hover {
+            transform: scale(1.05);
+        }
+
+        .video-card img,
+        .article-card img {
+            width: 100%;
+            display: block;
+        }
+
+        .card-content {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 0 0 15px 15px;
+        }
+
+        .card-content h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-content p {
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .results-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .articles,
+        .videos {
+            flex: 1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #343a40;
+            transition: transform 0.3s;
+        }
+
+        .articles:hover,
+        .videos:hover {
+            transform: translateY(-10px);
+        }
+
+        .results h2 {
+            color: #495057;
+            border-bottom: 3px solid #6a11cb;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        footer {
+            background: #1d3557;
+            padding: 20px 0;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #fff;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+        }
+
+        /* Summary Box */
+        .summary-box {
+            display: none;
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+            padding: 15px;
+            border-radius: 6px;
+            position: relative;
+            z-index: 10;
+            width: calc(100% - 40px); /* Same width as the articles box */
+            margin-top: 10px;
+            color: #495057;
+        }
+
+        .summary-box h4 {
+            margin-bottom: 10px;
+            color: #6a11cb;
+        }
+
+        .close-summary {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            color: #6a11cb;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>News Spot</h1>
+        <p>Discover the latest videos, articles, and insights with ease.</p>
+        <div class="search-bar">
+            <input type="text" id="searchBar" placeholder="Enter a keyword (Specific Word Related To The News Required)..." />
+            <button class="btn btn-custom" onclick="triggerSearch()"><i class="fas fa-search"></i> Search</button>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="container my-5">
+        <div class="results-container">
+            <!-- Articles Section -->
+            <div class="articles">
+                <h2>Top News Articles</h2>
+                <div id="articleResults"></div>
+            </div>
+
+            <!-- Videos Section -->
+            <div class="videos">
+                <h2>Top News Videos</h2>
+                <div id="videoResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>News Spot - Bringing the world's stories to you.</p>
+    </footer>
+    
+
+    <script>
+        function triggerSearch() {
+            const searchBar = document.getElementById('searchBar');
+            const query = searchBar.value.trim();
+            if (query) {
+                fetchArticles(query);
+                fetchVideos(query);
+            }
+        }
+
+        document.getElementById('searchBar').addEventListener('keyup', function (event) {
+            if (event.key === 'Enter') {
+                triggerSearch();
+            }
+        });
+
+        function fetchArticles(query) {
+            fetch(`/api/articles?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const articleResults = document.getElementById('articleResults');
+                    articleResults.innerHTML = '';
+                    if (data.length === 0) {
+                        articleResults.innerHTML = '<p class="no-results">No articles found for this query.</p>';
+                        return;
+                    }
+                    data.forEach((article, index) => {
+                        const articleItem = document.createElement('div');
+                        articleItem.className = 'result-item';
+                        const resultContainerId = `summary-result-${index}`;
+                        articleItem.innerHTML = `
+                            <a href="${article.url}" target="_blank">${article.title}</a>
+                            <p>${article.description || 'No description available.'}</p>
+                            <button onclick="summarizeArticle('${article.url}', '${resultContainerId}')">Summarize</button>
+                            <div id="${resultContainerId}" class="summary-box">
+                                <span class="close-summary" onclick="closeSummary('${resultContainerId}')">X</span>
+                            </div>
+                        `;
+                        articleResults.appendChild(articleItem);
+                    });
+                })
+                .catch(error => console.error('Error fetching articles:', error));
+        }
+
+        function fetchVideos(query) {
+            fetch(`/api/videos?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const videoResults = document.getElementById('videoResults');
+                    videoResults.innerHTML = '';
+                    if (data.length === 0) {
+                        videoResults.innerHTML = '<p class="no-results">No videos found for this query.</p>';
+                        return;
+                    }
+                    data.forEach(video => {
+                        const videoItem = document.createElement('div');
+                        videoItem.className = 'result-item';
+                        videoItem.innerHTML = `
+                            <a href="${video.url}" target="_blank">${video.title}</a>
+                            <p>${video.description || 'No description available.'}</p>
+                            <p>Views: ${video.views.toLocaleString()}</p>
+                            <p>Likes: ${video.likes.toLocaleString()}</p>
+                        `;
+                        videoResults.appendChild(videoItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching videos:', error);
+                    document.getElementById('videoResults').innerHTML = '<p class="no-results">Error fetching videos. Please try again later.</p>';
+                });
+        }
+
+        function summarizeArticle(url, resultContainerId) {
+            fetch('/api/summarize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultContainer = document.getElementById(resultContainerId);
+                    if (data.error) {
+                        resultContainer.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+                    } else {
+                        const summaryHtml = data.summary.map(sentence => `<p>${sentence}</p>`).join('');
+                        resultContainer.innerHTML = `<h4>Summary:</h4>${summaryHtml}`;
+                        resultContainer.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function closeSummary(resultContainerId) {
+            const resultContainer = document.getElementById(resultContainerId);
+            resultContainer.style.display = 'none';
+        }
+    </script>
+
+</body>
+
+</html>
